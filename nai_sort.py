@@ -1,6 +1,7 @@
 import os
 import shutil
 import json
+import re
 from tags import CHARACTER_TAGS, TAGS
 
 def clear_output_directory(output_directory):
@@ -19,24 +20,24 @@ def categorize_image(image_metadata, output_directory):
     file_name = image_metadata.get("File name")
     
     # Check for character tags
-    char_tag_count = sum(description.count(tag.lower()) for tag in CHARACTER_TAGS)
+    characters_in_image = [tag for tag in CHARACTER_TAGS if re.search(r'(?<![^\W_]){0}(?![^\W_])'.format(re.escape(tag.lower())), description)]
+    char_tag_count = len(characters_in_image)
     if char_tag_count == 1:
-        for char_tag in CHARACTER_TAGS:
-            if char_tag.lower() in description:
-                char_tag_folder = os.path.join(output_directory, "character", char_tag)
-                os.makedirs(char_tag_folder, exist_ok=True)
-                shutil.copy(os.path.join("input", file_name), char_tag_folder)
-                return True
+        char_tag = characters_in_image[0]
+        char_tag_folder = os.path.join(output_directory, "character", char_tag)
+        os.makedirs(char_tag_folder, exist_ok=True)
+        shutil.copy(os.path.join("input", file_name), char_tag_folder)
+        return True
     
     # Check for regular tags
-    reg_tag_count = sum(description.count(tag.lower()) for tag in TAGS)
+    tags_in_image = [tag for tag in TAGS if re.search(r'(?<![^\W_]){0}(?![^\W_])'.format(re.escape(tag.lower())), description)]
+    reg_tag_count = len(tags_in_image)
     if reg_tag_count == 1:
-        for reg_tag in TAGS:
-            if reg_tag.lower() in description:
-                reg_tag_folder = os.path.join(output_directory, "tags", reg_tag)
-                os.makedirs(reg_tag_folder, exist_ok=True)
-                shutil.copy(os.path.join("input", file_name), reg_tag_folder)
-                return True
+        reg_tag = tags_in_image[0]
+        reg_tag_folder = os.path.join(output_directory, "tags", reg_tag)
+        os.makedirs(reg_tag_folder, exist_ok=True)
+        shutil.copy(os.path.join("input", file_name), reg_tag_folder)
+        return True
     
     # If no or multiple tags match, move to unsorted folder
     unsorted_folder = os.path.join(output_directory, "unsorted")
@@ -69,8 +70,8 @@ def sort_images(metadata_file, output_directory):
     print(f"Regular tags sorted: {regular_sorted}/{total_images}")
     print(f"Unsorted: {unsorted}/{total_images}")
 
-def copy_failed_attempts_to_unsorted(output_directory, failed_files):
-    unsorted_folder = os.path.join(output_directory, "unsorted")
+def copy_failed_attempts_to_folder(output_directory, failed_files):
+    unsorted_folder = os.path.join(output_directory, "failed attempts")
     os.makedirs(unsorted_folder, exist_ok=True)
     for failed_file in failed_files:
         source_path = os.path.join("input", failed_file)
@@ -91,6 +92,6 @@ sort_images(metadata_file, output_directory)
 with open(metadata_file, 'r') as f:
     metadata = json.load(f)
     failed_files = metadata.get("failed_files", [])
-    copy_failed_attempts_to_unsorted(output_directory, failed_files)
+    copy_failed_attempts_to_folder(output_directory, failed_files)
 
-print(f"{len(failed_files)} files that failed the meta data check were copied to the \"unsorted\" folder.")
+print(f"{len(failed_files)} files that failed the meta data check were copied to the \"failed attempts\" folder.")

@@ -6,14 +6,20 @@ Meta data extraction scripts for images generated with NovelAI's image generatio
 
 `nai_sort.py` copies the images in `input/` and sorts them into `output/`.
 
+## Requirements
+
+* Python v3
+* NumPy package
+
 ## How to use
 
 In order to sort your images, these are the steps you must follow:
 
+1. Make sure your python environment is prepared, on python v3 install the NumPy package by executing the `pip install numpy` command (I recommend creating a virtual environment beforehand).
 1. Move the images you wish to sort into the `input/` folder.
 2. Run the `nai_meta.py` script, this will provide you with a `all_metadata.json` file which contains all the meta data values for all images.
-3. Remove the suffix `.example` from the `tags.py.example` file, and populate the array values with the tags you wish to set for the sorting process, these will be the names of the destinations folders (these tag names don't have to be a perfect match, they only need to be a word that is within a tag in order to identify it, so for example in the case of the tag `monkey_d._luffy`, just adding the value `"luffy"` to the character tag array is enough, granted there aren't any other long tags that also have the string `"luffy"` in it, you get the idea).
-    > Disclaimer: The tags you use during sorting will be **mutually exclusive**, what do I mean by this? for example if in your list of tags you have `smile`, and `open_mouth`, the script will try to sort by those images that only have one of those tags, not both of them at the same time. This is in order to avoid duplicate images in multiple folders, which would be the inclusive case where you would end up with the same image that has the tags `smile, open_mouth` in two different folders `smile/` and `open_mouth/`. The same principle will apply to character tags, so as a rule of thumb do try to use unique tags with no correlation to each other, otherwise these images with multiple tags won't know what their sorting destination will be.
+3. Remove the suffix `.example` from the `tags.py.example` file, and populate the array values with the tags you wish to set for the sorting process, these will be the names of the destination folders. These tag names don't have to be a perfect match and are treated as case insensitive, they minimmum requirement is that it should be a word that is within a tag in order to be identifiable, so for example in the case of the tag `monkey d. luffy`, just adding the value `"luffy"` to the `CHARACTER_TAGS` array is enough, granted there aren't any other long tags that also have the string `"luffy"` in them, you get the idea.
+    > Disclaimer: The tags you use during sorting will be **mutually exclusive**, what do I mean by this? for example if in your list of tags you have `smile`, and `open mouth`, the script will try to sort by those images that only have one of those tags, not both of them at the same time. This is in order to avoid duplicate images in multiple folders, which would be the inclusive case where you would end up with the same image that has the tags `smile, open mouth` in two different folders `smile/` and `open mouth/`. The same principle will apply to character tags, so as a rule of thumb do try to use unique tags with no correlation to each other, otherwise these images with multiple tags won't know what their sorting destination will be. For more information check the [general list of advice for effective sorting](#general-list-of-advice-for-effective-sorting).
 4. Run the `nai_sort.py` script and watch as your images get sorted and outputted into the `output/` folder.
     > Conversely, instead of running each python script separately, you could also run the `run_pipeline.sh` executable to execute both scripts with one command. Just make sure to make the `.sh` file executable first.
 
@@ -27,7 +33,10 @@ As a last note, the sorting process is divided in three parts, character tag bas
 ### General list of advice for effective sorting
 
 * Try to fill the character tag array with as many cases as you can find in your local collection in order to avoid mixed character folders. For instance, in the case an image has multiple characters and you only have one of those characters listed in your character tag array, the image to be sorted will be sent to the folder that contains that character match along with the other characters that are in that image. But if we list each character in the image we make use of the **mutual exclusivity rule** and the image will be sent to the `unsorted/` folder.
+* Try to be as complete as possible with your tag names, suppose you want to sort by a tag that contains the word `aqua` in it with the intention of sorting images that have the `aqua hair` tag (or a character with the name `aqua`), if you keep it as just `aqua` then you end up risking not sorting images that have both `aqua hair, aqua eyes` because by the **mutual exclusivity rule** the existence of these two tags that contain the word `aqua` won't allow this image to be sorted.
 * In the case of regular tags, try to use unique tags with no correlation to each other in order to make effective use of the mutual exclusivity rule.
+* Characters tags and regular tags are not bound to each other by the **mutual exclusivity rule**, they are treated as different batches and a tag in the character tag list won't have an effect on the sorting for the regular tag sort batch, and vice versa.
+* In theory the string matching regex should be able to match whole words as well as words that are surrounded by underscores `_`, so if you have various images with the character `luffy` but some of them were prompted in different formats like `monkey d. luffy` or `monkey_d._luffy`, the regex pattern should still be able to pick up both cases so there is no need to add redundant tags cases like these.
 
 ### Does it work for all images?
 
