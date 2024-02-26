@@ -2,7 +2,7 @@
 
 Meta data extraction and sorting scripts for images generated with NovelAI's image generation functionality.
 
-`nai_meta.py` extracts prompt information and other settings from the alpha channel of NAI generated images. The information is stored in a json file called `all_metadata.json`. The contents of this file should look something like this:
+`nai_meta.py` recursively extracts prompt information and other settings from the alpha channel of NAI generated images that live in the `input/` folder. The information is stored in a json file called `all_metadata.json`. The contents of this file should look something like this:
 ```json
 {
     "metadata": [
@@ -54,7 +54,7 @@ Meta data extraction and sorting scripts for images generated with NovelAI's ima
 ```
 `"metadata"` is where the meta data for the images is stored at and `"failed_files"` is where files that didn't have meta data on them or encountered an error during processing are listed.
 
-`nai_sort.py` copies the images in `input/` and sorts them into `output/`.
+`nai_sort.py` copies the images in `input/` and sorts them into `output/`. 
 
 ## Requirements
 
@@ -66,7 +66,7 @@ Meta data extraction and sorting scripts for images generated with NovelAI's ima
 In order to sort your images, these are the steps you must follow:
 
 1. Make sure your python environment is prepared, on python v3 install the NumPy package by executing the `pip install numpy` command (I recommend creating a virtual environment beforehand).
-1. Move the images you wish to sort into the `input/` folder.
+1. Move the images you wish to sort into the `input/` folder. It doesn't matter if you include subfolders, `nai_meta.py` will read all images and `nai_sort.py` will sort them.
 2. Run the `nai_meta.py` script, this will provide you with a `all_metadata.json` file which contains all the meta data values for all images.
 3. Remove the suffix `.example` from the `tags.py.example` file, and populate the array values with the tags you wish to set for the sorting process, these will be the names of the destination folders. These tag names don't have to be a perfect match and are treated as case insensitive, they minimmum requirement is that it should be a word that is within a tag in order to be identifiable, so for example in the case of the tag `monkey d. luffy`, just adding the value `"luffy"` to the `CHARACTER_TAGS` array is enough, granted there aren't any other long tags that also have the string `"luffy"` in them, you get the idea.
     > Disclaimer: The tags you use during sorting will be **mutually exclusive**, what do I mean by this? for example if in your list of tags you have `smile`, and `open mouth`, the script will try to sort by those images that only have one of those tags, not both of them at the same time. This is in order to avoid duplicate images in multiple folders, which would be the inclusive case where you would end up with the same image that has the tags `smile, open mouth` in two different folders `smile/` and `open mouth/`. The same principle will apply to character tags, so as a rule of thumb do try to use unique tags with no correlation to each other, otherwise these images with multiple tags won't know what their sorting destination will be. For more information check the [general list of advice for effective sorting](#general-list-of-advice-for-effective-sorting).

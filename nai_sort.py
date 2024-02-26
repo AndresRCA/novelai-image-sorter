@@ -17,7 +17,7 @@ def clear_output_directory(output_directory):
 
 def categorize_image(image_metadata, output_directory):
     description = image_metadata.get("Description", "").lower()
-    file_name = image_metadata.get("File name")
+    file_path = image_metadata.get("File path")
     
     # Check for character tags
     characters_in_image = [tag for tag in CHARACTER_TAGS if re.search(r'(?<![^\W_]){0}(?![^\W_])'.format(re.escape(tag.lower())), description)]
@@ -26,7 +26,7 @@ def categorize_image(image_metadata, output_directory):
         char_tag = characters_in_image[0]
         char_tag_folder = os.path.join(output_directory, "character", char_tag)
         os.makedirs(char_tag_folder, exist_ok=True)
-        shutil.copy(os.path.join("input", file_name), char_tag_folder)
+        shutil.copy(file_path, char_tag_folder)
         return True
     
     # Check for regular tags
@@ -36,13 +36,13 @@ def categorize_image(image_metadata, output_directory):
         reg_tag = tags_in_image[0]
         reg_tag_folder = os.path.join(output_directory, "tags", reg_tag)
         os.makedirs(reg_tag_folder, exist_ok=True)
-        shutil.copy(os.path.join("input", file_name), reg_tag_folder)
+        shutil.copy(file_path, reg_tag_folder)
         return True
     
     # If no or multiple tags match, move to unsorted folder
     unsorted_folder = os.path.join(output_directory, "unsorted")
     os.makedirs(unsorted_folder, exist_ok=True)
-    shutil.copy(os.path.join("input", file_name), unsorted_folder)
+    shutil.copy(file_path, unsorted_folder)
     return False
 
 def sort_images(metadata_file, output_directory):
@@ -74,8 +74,8 @@ def copy_failed_attempts_to_folder(output_directory, failed_files):
     unsorted_folder = os.path.join(output_directory, "failed attempts")
     os.makedirs(unsorted_folder, exist_ok=True)
     for failed_file in failed_files:
-        source_path = os.path.join("input", failed_file)
-        destination_path = os.path.join(unsorted_folder, failed_file)
+        source_path = failed_file  # Use full file path
+        destination_path = os.path.join(unsorted_folder, os.path.basename(failed_file))  # Use only file name in destination
         shutil.copy2(source_path, destination_path)
 
 # Define the paths

@@ -56,28 +56,29 @@ image_extensions = ['.png', '.jpg', '.jpeg', '.bmp', '.gif', '.tiff']
 all_metadata = []
 failed_files = []
 
-for filename in os.listdir(directory):
-    if any(filename.lower().endswith(ext) for ext in image_extensions):
-        file_path = os.path.join(directory, filename)
-        print(f"Processing {file_path}...")
-        try:
-            img = Image.open(file_path)
-            img = np.array(img)
-            assert img.shape[-1] == 4 and len(img.shape) == 3, "image format"
-            reader = LSBExtractor(img)
-            magic = "stealth_pngcomp"
-            read_magic = reader.get_next_n_bytes(len(magic)).decode("utf-8")
-            assert magic == read_magic, "magic number"
-            read_len = reader.read_32bit_integer() // 8
-            json_data = reader.get_next_n_bytes(read_len)
-            json_data = json.loads(gzip.decompress(json_data).decode("utf-8"))
-            if "Comment" in json_data:
-                json_data["Comment"] = json.loads(json_data["Comment"])
-            json_data["File name"] = filename  # Add the "File name" field
-            all_metadata.append(json_data)
-        except Exception as e:
-            print(f"Failed to process {file_path}: {e}")
-            failed_files.append(filename)
+for root, dirs, files in os.walk(directory):
+    for filename in files:
+        if any(filename.lower().endswith(ext) for ext in image_extensions):
+            file_path = os.path.join(root, filename)
+            print(f"Processing {file_path}...")
+            try:
+                img = Image.open(file_path)
+                img = np.array(img)
+                assert img.shape[-1] == 4 and len(img.shape) == 3, "image format"
+                reader = LSBExtractor(img)
+                magic = "stealth_pngcomp"
+                read_magic = reader.get_next_n_bytes(len(magic)).decode("utf-8")
+                assert magic == read_magic, "magic number"
+                read_len = reader.read_32bit_integer() // 8
+                json_data = reader.get_next_n_bytes(read_len)
+                json_data = json.loads(gzip.decompress(json_data).decode("utf-8"))
+                if "Comment" in json_data:
+                    json_data["Comment"] = json.loads(json_data["Comment"])
+                json_data["File path"] = file_path  # Add the "File path" field
+                all_metadata.append(json_data)
+            except Exception as e:
+                print(f"Failed to process {file_path}: {e}")
+                failed_files.append(file_path)
 
 # Write all metadata to a JSON file
 json_output_file = 'all_metadata.json'
