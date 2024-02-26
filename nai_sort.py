@@ -46,16 +46,17 @@ def categorize_image(image_metadata, output_directory):
 
 def sort_images(metadata_file, output_directory):
     with open(metadata_file, 'r') as f:
-        all_metadata = json.load(f)
+        metadata = json.load(f)
+        all_metadata = metadata.get("metadata", [])
     
     character_sorted = 0
     regular_sorted = 0
     unsorted = 0
     total_images = len(all_metadata)
     
-    for i, metadata in enumerate(all_metadata, 1):
+    for i, image_metadata in enumerate(all_metadata, 1):
         print(f"Processing image {i}/{total_images}...")
-        if categorize_image(metadata, output_directory):
+        if categorize_image(image_metadata, output_directory):
             if i <= total_images // 2:  # First half for character tags, second half for regular tags
                 character_sorted += 1
             else:
@@ -68,6 +69,14 @@ def sort_images(metadata_file, output_directory):
     print(f"Regular tags sorted: {regular_sorted}/{total_images}")
     print(f"Unsorted: {unsorted}/{total_images}")
 
+def copy_failed_attempts_to_unsorted(output_directory, failed_files):
+    unsorted_folder = os.path.join(output_directory, "unsorted")
+    os.makedirs(unsorted_folder, exist_ok=True)
+    for failed_file in failed_files:
+        source_path = os.path.join("input", failed_file)
+        destination_path = os.path.join(unsorted_folder, failed_file)
+        shutil.copy2(source_path, destination_path)
+
 # Define the paths
 metadata_file = "all_metadata.json"
 output_directory = "output"
@@ -77,3 +86,11 @@ clear_output_directory(output_directory)
 
 # Perform the sorting
 sort_images(metadata_file, output_directory)
+
+# Copy failed attempts to unsorted folder
+with open(metadata_file, 'r') as f:
+    metadata = json.load(f)
+    failed_files = metadata.get("failed_files", [])
+    copy_failed_attempts_to_unsorted(output_directory, failed_files)
+
+print(f"{len(failed_files)} files that failed the meta data check were copied to the \"unsorted\" folder.")

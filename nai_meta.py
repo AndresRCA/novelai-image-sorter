@@ -54,6 +54,7 @@ directory = 'input'  # directory with files
 image_extensions = ['.png', '.jpg', '.jpeg', '.bmp', '.gif', '.tiff']
 
 all_metadata = []
+failed_files = []
 
 for filename in os.listdir(directory):
     if any(filename.lower().endswith(ext) for ext in image_extensions):
@@ -76,10 +77,11 @@ for filename in os.listdir(directory):
             all_metadata.append(json_data)
         except Exception as e:
             print(f"Failed to process {file_path}: {e}")
+            failed_files.append(filename)
 
 # Write all metadata to a JSON file
 json_output_file = 'all_metadata.json'
 with open(json_output_file, 'w') as json_file:
-    json.dump(all_metadata, json_file, indent=4)
+    json.dump({"metadata": all_metadata, "failed_files": failed_files}, json_file, indent=4)
 
 print(f"All metadata saved to {json_output_file}.")
