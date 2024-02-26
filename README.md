@@ -5,7 +5,6 @@ Meta data extraction and sorting scripts for images generated with NovelAI's ima
 `nai_meta.py` extracts prompt information and other settings from the alpha channel of NAI generated images. The information is stored in a json file called `all_metadata.json`. The contents of this file should look something like this:
 ```json
 {
-    // "metadata" is where the meta data for the images would be found
     "metadata": [
         {
             "Description": "{{character name}}, thumbs up, [artist:artistname], etc",
@@ -46,7 +45,6 @@ Meta data extraction and sorting scripts for images generated with NovelAI's ima
             "..."
         }
     ],
-    // "failed_files" is where files that didn't have meta data on them or encountered an error during processing are listed
     "failed_files": [
         "file_name1.png",
         "file2.jpg",
@@ -54,6 +52,7 @@ Meta data extraction and sorting scripts for images generated with NovelAI's ima
     ]
 }
 ```
+`"metadata"` is where the meta data for the images is stored at and `"failed_files"` is where files that didn't have meta data on them or encountered an error during processing are listed.
 
 `nai_sort.py` copies the images in `input/` and sorts them into `output/`.
 
