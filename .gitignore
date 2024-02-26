@@ -1,5 +1,8 @@
+__pycache__
 input/*
 !input/.gitkeep
 output/*
 !output/.gitkeep
 all_metadata.json
+
+tags.py

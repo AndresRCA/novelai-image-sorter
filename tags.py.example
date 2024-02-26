@@ -1,0 +1,9 @@
+CHARACTER_TAGS = [
+  "your character name goes here",
+  "character 2"
+]
+
+TAGS = [
+  "your tag 1",
+  "your other tag 2"
+]
