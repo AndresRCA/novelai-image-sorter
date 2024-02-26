@@ -1,8 +1,59 @@
 # NovelAI Image Metadata Scripts
 
-Meta data extraction scripts for images generated with NovelAI's image generation functionality.
+Meta data extraction and sorting scripts for images generated with NovelAI's image generation functionality.
 
-`nai_meta.py` extracts prompt information and other settings from the alpha channel of NAI generated images. The information is stored in a json file called `all_metadata.json`.
+`nai_meta.py` extracts prompt information and other settings from the alpha channel of NAI generated images. The information is stored in a json file called `all_metadata.json`. The contents of this file should look something like this:
+```json
+{
+    // "metadata" is where the meta data for the images would be found
+    "metadata": [
+        {
+            "Description": "{{character name}}, thumbs up, [artist:artistname], etc",
+            "Software": "NovelAI",
+            "Source": "Stable Diffusion XL C1E1DE52",
+            "Generation time": "12.362822907976806",
+            "Comment": {
+                "prompt": "{{character name}}, thumbs up, [artist:artistname], etc",
+                "steps": 28,
+                "height": 1024,
+                "width": 1024,
+                "scale": 5.0,
+                "uncond_scale": 1.0,
+                "cfg_rescale": 0.0,
+                "seed": 3563546993,
+                "n_samples": 1,
+                "hide_debug_overlay": false,
+                "noise_schedule": "native",
+                "legacy_v3_extend": false,
+                "sampler": "k_euler",
+                "controlnet_strength": 1.0,
+                "controlnet_model": null,
+                "dynamic_thresholding": false,
+                "dynamic_thresholding_percentile": 0.999,
+                "dynamic_thresholding_mimic_scale": 10.0,
+                "sm": true,
+                "sm_dyn": false,
+                "skip_cfg_below_sigma": 0.0,
+                "lora_unet_weights": null,
+                "lora_clip_weights": null,
+                "uc": "malformed hands, long neck, long body, extra fingers, dark skin girl, mosaic, bad faces, bad face, bad eyes, bad feet, extra toes, earrings,  censor bar, censor bars,  @_@, glowing eyes, sketch, flat color,  bad shadow, uncoordinated body, unnatural body, fused breasts, bad breasts, eyepatch,",
+                "request_type": "PromptGenerateRequest",
+                "signed_hash": "some random base64 here"
+            },
+            "File name": "file_name.png"
+        },
+        {
+            "..."
+        }
+    ],
+    // "failed_files" is where files that didn't have meta data on them or encountered an error during processing are listed
+    "failed_files": [
+        "file_name1.png",
+        "file2.jpg",
+        "..."
+    ]
+}
+```
 
 `nai_sort.py` copies the images in `input/` and sorts them into `output/`.
 
@@ -40,4 +91,4 @@ As a last note, the sorting process is divided in three parts, character tag bas
 
 ### Does it work for all images?
 
-If the image was generated using NovelAI's image generation functionality, and if these were not altered in any form (...Or not, honestly I'm not sure what makes an image lose its meta data), the script should be able to extract meta data from them, otherwise the script indicates when it has failed to do so and these will end up in the `unsorted/` folder.
+If the image was generated using NovelAI's image generation functionality, and if these were not altered in any form (...Or not, honestly I'm not sure what makes an image lose its meta data), the script should be able to extract meta data from them, otherwise the script indicates when it has failed to do so and these will end up in the `output/failed attempts/` folder`.
