@@ -35,7 +35,7 @@ Meta data extraction and sorting scripts for images generated with NovelAI's ima
                 "skip_cfg_below_sigma": 0.0,
                 "lora_unet_weights": null,
                 "lora_clip_weights": null,
-                "uc": "malformed hands, long neck, long body, extra fingers, dark skin girl, mosaic, bad faces, bad face, bad eyes, bad feet, extra toes, earrings,  censor bar, censor bars,  @_@, glowing eyes, sketch, flat color,  bad shadow, uncoordinated body, unnatural body, fused breasts, bad breasts, eyepatch,",
+                "uc": "malformed hands, extra fingers, mosaic, bad faces, bad face, bad eyes, glowing eyes, sketch, flat color, bad shadow, uncoordinated body, unnatural body, eyepatch",
                 "request_type": "PromptGenerateRequest",
                 "signed_hash": "some random base64 here"
             },
@@ -62,6 +62,10 @@ Meta data extraction and sorting scripts for images generated with NovelAI's ima
 * NumPy package
 
 ## How to use
+
+**Command usage**:
+* `python nai_meta.py [input_path="./input"]`
+* `python nai_sort.py [output_path="./output"]`
 
 In order to sort your images, these are the steps you must follow:
 

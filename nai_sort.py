@@ -2,6 +2,7 @@ import os
 import shutil
 import json
 import re
+import argparse
 from tags import CHARACTER_TAGS, TAGS
 
 def clear_output_directory(output_directory):
@@ -78,20 +79,28 @@ def copy_failed_attempts_to_folder(output_directory, failed_files):
         destination_path = os.path.join(unsorted_folder, os.path.basename(failed_file))  # Use only file name in destination
         shutil.copy2(source_path, destination_path)
 
-# Define the paths
-metadata_file = "all_metadata.json"
-output_directory = "output"
+def main():
+    parser = argparse.ArgumentParser(description="Sort and categorize images.")
+    parser.add_argument("output_path", nargs="?", type=str, default="output", help="Path to the output folder. Default is 'output' folder in the current directory.")
+    args = parser.parse_args()
 
-# Clear the output directory
-clear_output_directory(output_directory)
+    output_path = args.output_path
 
-# Perform the sorting
-sort_images(metadata_file, output_directory)
+    metadata_file = "all_metadata.json"
 
-# Copy failed attempts to unsorted folder
-with open(metadata_file, 'r') as f:
-    metadata = json.load(f)
-    failed_files = metadata.get("failed_files", [])
-    copy_failed_attempts_to_folder(output_directory, failed_files)
+    # Clear the output directory
+    clear_output_directory(output_path)
 
-print(f"{len(failed_files)} files that failed the meta data check were copied to the \"failed attempts\" folder.")
+    # Perform the sorting
+    sort_images(metadata_file, output_path)
+
+    # Copy failed attempts to unsorted folder
+    with open(metadata_file, 'r') as f:
+        metadata = json.load(f)
+        failed_files = metadata.get("failed_files", [])
+        copy_failed_attempts_to_folder(output_path, failed_files)
+
+    print(f"{len(failed_files)} files that failed the metadata check were copied to the \"failed attempts\" folder.")
+
+if __name__ == "__main__":
+    main()
