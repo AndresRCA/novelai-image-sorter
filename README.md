@@ -80,13 +80,14 @@ As a last note, the sorting process is divided in three parts, character tag bas
 
 > Keyword **mutual exclusivity**: think of it as a XOR operator, in the context of sorting images it means that there needs to be **only one** existing identifying tag in that image in order to sent it to the correct destination, otherwise if an image has multiple identifying tags that exist in `TAGS` or `CHARACTER_TAGS` (depending on the case), the sorting algorithm won't be able to make a decision on where to send the image and will ultimately send it to a `unsorted/` folder.
 
-### General list of advice for effective sorting
+### General list of advice for effective sorting and caution
 
 * Try to fill the character tag array with as many cases as you can find in your local collection in order to avoid mixed character folders. For instance, in the case an image has multiple characters and you only have one of those characters listed in your character tag array, the image to be sorted will be sent to the folder that contains that character match along with the other characters that are in that image. But if we list each character in the image we make use of the **mutual exclusivity rule** and the image will be sent to the `unsorted/` folder.
 * Try to be as complete as possible with your tag names, suppose you want to sort by a tag that contains the word `aqua` in it with the intention of sorting images that have the `aqua hair` tag (or a character with the name `aqua`), if you keep it as just `aqua` then you end up risking not sorting images that have both `aqua hair, aqua eyes` because by the **mutual exclusivity rule** the existence of these two tags that contain the word `aqua` won't allow this image to be sorted.
 * In the case of regular tags, try to use unique tags with no correlation to each other in order to make effective use of the mutual exclusivity rule.
 * Characters tags and regular tags are not bound to each other by the **mutual exclusivity rule**, they are treated as different batches and a tag in the character tag list won't have an effect on the sorting for the regular tag sort batch, and vice versa.
 * In theory the string matching regex should be able to match whole words as well as words that are surrounded by underscores `_`, so if you have various images with the character `luffy` but some of them were prompted in different formats like `monkey d. luffy` or `monkey_d._luffy`, the regex pattern should still be able to pick up both cases so there is no need to add redundant tags cases like these.
+* `nai_sort.py` does not copy over files in the `input/` folder that are not images, so it is advised to ONLY put images there, we don't want a mistake where you leave a document mixed in it and delete the contents of `input/` after getting your images sorted in `output/`. The supported image files are `['.png', '.jpg', '.jpeg', '.bmp', '.gif', '.tiff']`.
 
 ### Does it work for all images?
 

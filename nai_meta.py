@@ -23,6 +23,8 @@ class LSBExtractor:
             if self.row == self.rows:
                 self.row = 0
                 self.col += 1
+        else:
+            self.bits = 8
 
     def get_one_byte(self):
         while self.bits < 8:
