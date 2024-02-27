@@ -91,4 +91,4 @@ As a last note, the sorting process is divided in three parts, character tag bas
 
 ### Does it work for all images?
 
-If the image was generated using NovelAI's image generation functionality, and if these were not altered in any form (...Or not, honestly I'm not sure what makes an image lose its meta data), the script should be able to extract meta data from them, otherwise the script indicates when it has failed to do so and these will end up in the `output/failed attempts/` folder`.
+If the image was generated using NovelAI's image generation functionality, and if these were not altered in any form (...Or not, honestly I'm not sure what makes an image lose its meta data), the script should be able to extract meta data from them, otherwise the script indicates when it has failed to do so and these will end up in the `output/failed attempts/` folder.
